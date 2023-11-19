@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat | Onestop.ai | Simple Chat app</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script > try{Typekit.load({async:true});}catch(e){}</script>
+
+</head>
+<body>
+
+
+
+  <main>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card" style="width: 700px ; height: 600px;">
+            <div class="card-header text-center">
+            <div class="card-body text-center">
+     <span>All User</span>
+     <span class="float-end" data-bs-toggle="tooltip" data-bs-placement="right" title="logout" onclick="triggerLogout()" > <i class="fa fa-power-off"></i></span>
+            </div>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush" id="user-list" style="cursor:pointer"> 
+
+            </ul>
+          </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
+    <script>
+        if(localStorage.getItem('loggedin_user_id')==""|| localStorage.getItem('loggedin_user_id')==undefined || localStorage.getItem('loggedin_user_id')==null){
+        location.href="index.html"
+      }
+    
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    
+      function triggerLogout(){
+        localStorage.removeItem('loggedin_user_id')
+        localStorage.removeItem('chat_user_id')
+        localStorage.removeItem('chat_user_email')
+        location.href="index.html"
+      }
+    
+    
+    
+    
+    </script>
+    
+    <script type="module">
+      
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
+        import {getAuth} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"
+        import {getDatabase,ref,set,push,onValue} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyChN8vqQ9shBXZ_9VWABXAR8KMm48Zu6Ec",
+          authDomain: "chat-app-7eebd.firebaseapp.com",
+          databaseURL:"https://chat-app-7eebd-default-rtdb.firebaseio.com",
+          projectId: "chat-app-7eebd",
+          storageBucket: "chat-app-7eebd.appspot.com",
+          messagingSenderId: "1054587897214",
+          appId: "1:1054587897214:web:a78e02956929553f59df2f",
+          measurementId: "G-TKET6MF7SB"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      var db=getDatabase();
+        const userRef=ref(db,"/registered_users")
+      onValue(userRef,(snapShot)=>{
+        const data=snapShot.val();
+        showUsers(data)
+      })
+
+      
+      function showUsers(users){
+        var html="";
+        console.log("waste")
+        for (let user in users)
+        {
+          // var user_id="'"+users[user].email+"'";
+          // console.log(user_id)
+
+          // html=html+' <li class="list-group-item loadchat" style="cursor: pointer;data-user_email=" >'+users[user].email +'</li>'
+          html=html+'<li class="list-group-item loadchat" data-user_id="'+users[user].userid+'" data-user_email="'+users[user].email+'">'+users[user].email+'</li>'
+        }
+        $("#user-list").html(html);
+
+       
+              // <li class="list-group-item" style="cursor: pointer;">User.two@yomail.com</li>
+
+
+      }
+
+      $(document).on('click',".loadchat",function(e){
+        localStorage.setItem('chat_user_id',$(this).attr('data-user_id'))
+        localStorage.setItem('chat_user_email',$(this).attr('data-user_email'))
+        setTimeout(location.href="chat.html",2000)
+      })
+      
+      
+      
+      
+      
+      
+      
+      </script>
+</body>
+</html>

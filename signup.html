@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp| Onestop.ai | Simple Chat app</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script > try{Typekit.load({async:true});}catch(e){}</script>
+
+</head>
+<body>
+  <main>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card" style="width: 700px ;">
+            <div class="card-header">Login</div>
+            <div class="card-body">
+                <form >
+                    <div class="form-group row mt-2">
+                        <label for="name" class="col-md-4 text-md-right">User Name </label>
+                        <div class="col-md-8">
+                            <input type="text" id="name" class="form-control" name="name" autofocus placeholder="Enter your Name">
+                            <span class="text-danger " id="nameErr"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mt-2">
+                      <label for="email" class="col-md-4 text-md-right">Email Address </label>
+                      <div class="col-md-8">
+                          <input type="text" id="email_address" class="form-control" name="email" autofocus placeholder="Enter your Email">
+                          <span class="text-danger " id="emailErr"></span>
+                          </div>
+                      </div>
+
+
+                        <div class="form-group row mt-2">
+                            <label for="password" class="col-md-4 text-md-right">password </label>
+                            <div class="col-md-8">
+                                <input type="password" id="password" class="form-control" name="password" autofocus placeholder="Enter your Password">
+                                <span class="text-danger " id="passwordErr"></span>
+                            </div>
+                            </div>
+
+                            <div class="form-group row mt-2">
+                              <label for="name" class="col-md-4 text-md-right">User Name </label>
+                              <div class="col-md-8">
+                                  <input type="password" id="confirm_password" class="form-control" name="confirm+password" autofocus placeholder="confirm your password">
+                                  <span class="text-danger " id="confirmPasswordErr"></span>
+                              </div>
+                          </div>
+
+
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4"></div>
+
+                                <div class="col-md-8">
+                                    <div class="checkbox">
+                                        <label for="checkbox">
+                                    <input type="checkbox"  name="remember" >Remember Me
+                               
+                                </label>
+                                
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group row mt-2">
+                                <div class="col-md-4"></div>
+
+                                <div class="col-md-8">
+                                    <div class="checkbox">
+                                        <label for="checkbox">
+                                            <button type="button" id="SaveUser" class="btn btn-primary">
+                                                SignUp 
+                                            </button>   
+                                            <p class="text-black mt-2 mb-2">I already have an Account <a href="index.html" style="text-decoration: none;"> Login Instead </a> </p>                                
+                                </label>
+                                
+                                </div>
+                              </div>
+
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+
+ 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
+    <script src="validation.js"></script>
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
+        import {getAuth,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"
+        import {getDatabase,ref,set,push,onValue} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyChN8vqQ9shBXZ_9VWABXAR8KMm48Zu6Ec",
+          authDomain: "chat-app-7eebd.firebaseapp.com",
+          databaseURL:"https://chat-app-7eebd-default-rtdb.firebaseio.com",
+          projectId: "chat-app-7eebd",
+          storageBucket: "chat-app-7eebd.appspot.com",
+          messagingSenderId: "1054587897214",
+          appId: "1:1054587897214:web:a78e02956929553f59df2f",
+          measurementId: "G-TKET6MF7SB"
+        };
+        
+            
+        const app = initializeApp(firebaseConfig);
+        const db=getDatabase();
+        function saveUserToFirebase(){
+          if(validateSignUpInputCredentials()){
+            const auth=getAuth(app);
+            createUserWithEmailAndPassword(auth,email,password).then((userCredentials)=>{
+              const user=userCredentials.user;
+              push(ref(db,'/registered_users'),{
+                userid:user.uid ,
+                email:user.email
+
+              }).then(()=>{
+                alert("Sucessfully Registered")
+              location.href=index.html 
+              }).catch((error)=>{
+                 const errorCode=error.code;
+                 console.log("ERROR IN ");
+                 const errorMessage=error.message;
+                 
+              })
+            })
+
+          }
+        }
+        
+        
+        $("#SaveUser").on('click',function(){
+          saveUserToFirebase();
+        })
+        
+        const analytics = getAnalytics(app);
+      </script>
+</body>
+</html>
